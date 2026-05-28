@@ -41,25 +41,26 @@ st.markdown(
        PALETTE - warm editorial, confident colour
        ===================================================== */
     :root {
-        --cream:     #FBF7EE;
-        --paper:     #F1E9D7;
-        --paper-2:   #E8DFC7;
-        --line:      #D9CFB4;
-        --ink:       #1A1F2E;
-        --ink-soft:  #3A4256;
-        --grey:      #6B7280;
-        --grey-soft: #9CA3AF;
+        --cream:     #F4F6F9;   /* page background - cool light slate */
+        --paper:     #E9EDF3;
+        --paper-2:   #DDE3EC;
+        --line:      #D2D9E3;
+        --ink:       #14181F;
+        --ink-soft:  #36404F;
+        --grey:      #5E6673;
+        --grey-soft: #9AA0AC;
 
-        --teal:        #0E5E5C;
-        --teal-light:  #C4E1DF;
-        --terracotta:  #D94F2B;
-        --terracotta-light: #FBD9CD;
-        --mustard:     #D9A03C;
-        --mustard-light: #FAEBC8;
-        --forest:      #2D6A3F;
-        --forest-light: #CFE5D5;
+        --teal:        #1F4E79;   /* primary - corporate navy-blue */
+        --teal-light:  #DCE7F2;
+        --terracotta:  #2563A6;   /* secondary action - steel blue */
+        --terracotta-light: #DCE7F2;
+        --mustard:     #B7791F;   /* amber - in-review */
+        --mustard-light: #FBEFD6;
+        --forest:      #2F7A4D;   /* green - active/approved */
+        --forest-light: #D7EBDF;
         --plum:        #7A3B5C;
         --plum-light:  #EDD4DF;
+        --slate:       #334155;   /* sidebar */
     }
 
     /* =====================================================
@@ -71,9 +72,8 @@ st.markdown(
     }
     .stApp {
         background:
-            radial-gradient(circle at 12% 8%,  rgba(217, 160, 60, 0.12) 0%, transparent 40%),
-            radial-gradient(circle at 88% 92%, rgba(14, 94, 92, 0.10) 0%, transparent 45%),
-            radial-gradient(circle at 95% 12%, rgba(217, 79, 43, 0.08) 0%, transparent 35%),
+            radial-gradient(circle at 12% 6%,  rgba(31, 78, 121, 0.05) 0%, transparent 42%),
+            radial-gradient(circle at 90% 94%, rgba(51, 65, 85, 0.05) 0%, transparent 45%),
             var(--cream);
     }
 
@@ -252,43 +252,78 @@ st.markdown(
 
     /* Tabs styling */
     .stTabs [data-baseweb="tab-list"] {
-        gap: 6px;
+        gap: 4px;
         border-bottom: 2px solid var(--line);
         padding-bottom: 0;
+        flex-wrap: wrap;            /* let section tabs wrap instead of overflowing */
     }
     .stTabs [data-baseweb="tab"] {
-        padding: 10px 18px;
+        padding: 8px 14px;
         font-family: 'Manrope', sans-serif;
         font-weight: 600;
+        font-size: 0.86rem;
         color: var(--grey);
-        background: transparent;
-        border: none;
-        border-radius: 6px 6px 0 0;
+        background: #EDF1F6;
+        border: 1px solid var(--line);
+        border-bottom: none;
+        border-radius: 7px 7px 0 0;
+    }
+    .stTabs [data-baseweb="tab"]:hover {
+        color: var(--teal);
+        background: var(--teal-light);
     }
     .stTabs [data-baseweb="tab"][aria-selected="true"] {
-        color: var(--teal) !important;
-        background: var(--teal-light) !important;
-    }
-    .stTabs [data-baseweb="tab-highlight"] {
+        color: #ffffff !important;
         background: var(--teal) !important;
-        height: 3px !important;
+        border-color: var(--teal) !important;
     }
+    .stTabs [data-baseweb="tab-highlight"] { background: transparent !important; }
+    .stTabs [data-baseweb="tab-panel"] { padding-top: 14px; }
 
-    /* Input fields */
+    /* Input fields — force dark, readable text on white */
     .stTextInput input,
     .stTextArea textarea,
     .stDateInput input,
     .stTimeInput input,
+    .stNumberInput input,
+    .stSelectbox div[data-baseweb="select"] div,
     .stMultiSelect div[data-baseweb="select"] > div {
-        background: #fff !important;
+        background: #ffffff !important;
+        color: #14181F !important;
+        -webkit-text-fill-color: #14181F !important;
         border: 1px solid var(--line) !important;
         border-radius: 8px !important;
         font-family: 'Manrope', sans-serif !important;
     }
+    /* The actual text the user types + selected values in dropdowns */
+    .stTextInput input,
+    .stTextArea textarea,
+    .stDateInput input,
+    .stTimeInput input,
+    .stNumberInput input {
+        caret-color: var(--teal) !important;
+    }
+    /* placeholder text should be a soft grey, not invisible */
+    .stTextInput input::placeholder,
+    .stTextArea textarea::placeholder,
+    .stDateInput input::placeholder,
+    .stTimeInput input::placeholder {
+        color: #9AA0AC !important;
+        -webkit-text-fill-color: #9AA0AC !important;
+        opacity: 1 !important;
+    }
+    /* selected value shown inside select / multiselect pills */
+    .stMultiSelect span[data-baseweb="tag"],
+    .stMultiSelect span[data-baseweb="tag"] span {
+        color: #ffffff !important;
+        -webkit-text-fill-color: #ffffff !important;
+    }
     .stTextInput input:focus,
-    .stTextArea textarea:focus {
+    .stTextArea textarea:focus,
+    .stDateInput input:focus,
+    .stTimeInput input:focus {
         border-color: var(--teal) !important;
-        box-shadow: 0 0 0 3px rgba(14, 94, 92, 0.12) !important;
+        box-shadow: 0 0 0 3px rgba(31, 78, 121, 0.14) !important;
     }
 
     /* Field labels */
@@ -426,24 +461,24 @@ def page_login():
     left, right = st.columns([1, 1], gap="large")
     with left:
         st.markdown("# StartRight.")
-       # st.caption("CDO · PROJECT INITIATION WORKFLOW")
-       # st.markdown(
-        #    "Move project initiation out of **scattered mailboxes** "
-         #   "and into a single space — with checklists, reviews, gap closure "
-          #  "and approvals in one place."
-        #)
-        #st.markdown("---")
-        #st.markdown("**Demo accounts**")
-        #st.markdown(
-         #   """
-          #  | Username | Password | Role |
-           # |---|---|---|
-            #| `priya` | `pm123` | Project Manager |
-            #| `rahul` | `pm123` | Project Manager |
-            #| `anita` | `pmo123` | PMO Reviewer |
-            #| `vikram` | `pmo123` | PMO Reviewer |
-            #"""
-        #)
+        st.caption("CDO · PROJECT INITIATION WORKFLOW")
+        st.markdown(
+            "Move project initiation out of **scattered mailboxes** "
+            "and into a single space — with checklists, reviews, gap closure "
+            "and approvals in one place."
+        )
+        st.markdown("---")
+        st.markdown("**Demo accounts**")
+        st.markdown(
+            """
+            | Username | Password | Role |
+            |---|---|---|
+            | `priya` | `pm123` | Project Manager |
+            | `rahul` | `pm123` | Project Manager |
+            | `anita` | `pmo123` | PMO Reviewer |
+            | `vikram` | `pmo123` | PMO Reviewer |
+            """
+        )
 
     with right:
         st.markdown("## Sign in")
@@ -842,75 +877,97 @@ def page_checklist():
         resp_to_value = {"—": "", "Yes": "yes", "No": "no", "N/A": "na"}
         value_to_resp = {v: k for k, v in resp_to_value.items()}
 
-        for section in CHECKLIST:
-            st.markdown(f"#### {section['section']}")
-            for item in section["items"]:
-                current = p["checklist"].get(item["id"], {"response": "", "note": ""})
-                current_label = value_to_resp.get(current["response"], "—")
-
-                # Build the label as HTML so the mandatory asterisk and gap icon
-                # render cleanly without confusing markdown's bold/italic parser.
-                pieces = []
-                if item["id"] in gap_item_ids:
-                    pieces.append('<span style="margin-right:6px;">⚠️</span>')
-                pieces.append(f'<b>{item["text"]}</b>')
-                if item["mandatory"]:
-                    pieces.append('<span style="color:#D94F2B;font-weight:700;margin-left:4px;">*</span>')
-                label_html = "".join(pieces)
-
-                with st.container(border=True):
-                    st.markdown(label_html, unsafe_allow_html=True)
-                    # Give the radio more room so all 4 options stay on one line.
-                    c1, c2 = st.columns([2, 3])
-                    chosen = c1.radio(
-                        "Response",
-                        resp_options,
-                        index=resp_options.index(current_label),
-                        key=f"resp_{item['id']}",
-                        horizontal=True,
-                        label_visibility="collapsed",
-                    )
-                    note = c2.text_input(
-                        "Note / evidence link",
-                        value=current["note"],
-                        key=f"note_{item['id']}",
-                        placeholder="Reference document, link, or note",
-                        label_visibility="collapsed",
-                    )
-
-                    # show existing gap comments for this item
-                    for g in open_gaps_list:
-                        if g["item_id"] == item["id"]:
-                            st.markdown(
-                                f"<div class='sr-gap-box'><b>PMO gap · {store.user_name(g['raised_by'])} · {g['raised_at']}</b>"
-                                f"<br>{g['comment']}</div>",
-                                unsafe_allow_html=True,
-                            )
-
-                responses[item["id"]] = {"response": resp_to_value[chosen], "note": note.strip()}
-            st.markdown("")
-
-        st.markdown("#### Kickoff Meeting")
-        c1, c2 = st.columns(2)
-        # parse existing kickoff_at if present
-        from datetime import date as _date, time as _time, datetime as _dt
-        existing_date = None
-        existing_time = None
-        if p.get("kickoff_at"):
-            try:
-                dt = _dt.fromisoformat(p["kickoff_at"])
-                existing_date = dt.date()
-                existing_time = dt.time()
-            except (ValueError, TypeError):
-                pass
-        kickoff_date = c1.date_input("Kickoff date *", value=existing_date, key="ko_date")
-        kickoff_time = c2.time_input("Kickoff time *", value=existing_time, key="ko_time")
-        kickoff_notes = st.text_area(
-            "Kickoff notes",
-            value=p.get("kickoff_notes", ""),
-            placeholder="Agenda, meeting link, attendees..."
+        st.markdown(
+            "<p class='sr-muted'>Complete each section using the tabs below. "
+            "Items marked <span style='color:#B7791F;font-weight:700;'>*</span> are mandatory "
+            "and must be answered <b>Yes</b> before you can submit.</p>",
+            unsafe_allow_html=True,
         )
 
+        # Build short tab labels: section number + a flag if it has any open gaps.
+        def short_label(section, idx):
+            num = section["section"].split(".")[0].strip()
+            # short keyword from the section name
+            name = section["section"].split(".", 1)[1].strip() if "." in section["section"] else section["section"]
+            words = name.split()
+            short = " ".join(words[:2])
+            has_gap = any(it["id"] in gap_item_ids for it in section["items"])
+            flag = " ⚠️" if has_gap else ""
+            return f"{num}. {short}{flag}"
+
+        section_tabs = st.tabs(
+            [short_label(s, i) for i, s in enumerate(CHECKLIST)] + ["📅 Kickoff"]
+        )
+
+        # ---- one tab per checklist section ----
+        for tab, section in zip(section_tabs[:-1], CHECKLIST):
+            with tab:
+                st.markdown(f"##### {section['section']}")
+                for item in section["items"]:
+                    current = p["checklist"].get(item["id"], {"response": "", "note": ""})
+                    current_label = value_to_resp.get(current["response"], "—")
+
+                    pieces = []
+                    if item["id"] in gap_item_ids:
+                        pieces.append('<span style="margin-right:6px;">⚠️</span>')
+                    pieces.append(f'<b>{item["text"]}</b>')
+                    if item["mandatory"]:
+                        pieces.append('<span style="color:#B7791F;font-weight:700;margin-left:4px;">*</span>')
+                    label_html = "".join(pieces)
+
+                    with st.container(border=True):
+                        st.markdown(label_html, unsafe_allow_html=True)
+                        c1, c2 = st.columns([2, 3])
+                        chosen = c1.radio(
+                            "Response",
+                            resp_options,
+                            index=resp_options.index(current_label),
+                            key=f"resp_{item['id']}",
+                            horizontal=True,
+                            label_visibility="collapsed",
+                        )
+                        note = c2.text_input(
+                            "Note / evidence link",
+                            value=current["note"],
+                            key=f"note_{item['id']}",
+                            placeholder="Reference document, link, or note",
+                            label_visibility="collapsed",
+                        )
+
+                        for g in open_gaps_list:
+                            if g["item_id"] == item["id"]:
+                                st.markdown(
+                                    f"<div class='sr-gap-box'><b>PMO gap · {store.user_name(g['raised_by'])} · {g['raised_at']}</b>"
+                                    f"<br>{g['comment']}</div>",
+                                    unsafe_allow_html=True,
+                                )
+
+                    responses[item["id"]] = {"response": resp_to_value[chosen], "note": note.strip()}
+
+        # ---- final tab: kickoff meeting ----
+        with section_tabs[-1]:
+            st.markdown("##### Kickoff Meeting")
+            c1, c2 = st.columns(2)
+            from datetime import date as _date, time as _time, datetime as _dt
+            existing_date = None
+            existing_time = None
+            if p.get("kickoff_at"):
+                try:
+                    dt = _dt.fromisoformat(p["kickoff_at"])
+                    existing_date = dt.date()
+                    existing_time = dt.time()
+                except (ValueError, TypeError):
+                    pass
+            kickoff_date = c1.date_input("Kickoff date *", value=existing_date, key="ko_date")
+            kickoff_time = c2.time_input("Kickoff time *", value=existing_time, key="ko_time")
+            kickoff_notes = st.text_area(
+                "Kickoff notes",
+                value=p.get("kickoff_notes", ""),
+                placeholder="Agenda, meeting link, attendees..."
+            )
+
+        # ---- submit bar (outside the tabs, always visible at the bottom) ----
+        st.markdown("---")
         st.caption("Items marked * are mandatory and must be answered Yes before submission.")
 
         c1, c2, _ = st.columns([1, 1, 2])
@@ -1002,42 +1059,51 @@ def page_review():
 
     with st.form("review_form"):
         gap_inputs = {}
-        for section in CHECKLIST:
-            st.markdown(f"#### {section['section']}")
-            for item in section["items"]:
-                resp = p["checklist"].get(item["id"], {"response": "", "note": ""})
-                resp_label = {"yes": "✅ Yes", "no": "❌ No", "na": "➖ N/A", "": "⏳ Pending"}.get(resp["response"], "⏳")
 
-                with st.container(border=True):
-                    line = f"**{item['text']}**"
-                    if item["mandatory"]:
-                        line += " <span style='color:#a4282c'>*</span>"
-                    st.markdown(f"{line}  &nbsp;&nbsp; {resp_label}", unsafe_allow_html=True)
-                    if resp["note"]:
-                        st.caption(f"PM note: {resp['note']}")
+        def short_label_r(section):
+            num = section["section"].split(".")[0].strip()
+            name = section["section"].split(".", 1)[1].strip() if "." in section["section"] else section["section"]
+            short = " ".join(name.split()[:2])
+            return f"{num}. {short}"
 
-                    gap_inputs[item["id"]] = st.text_area(
-                        "Raise gap / comment (leave empty if none)",
-                        key=f"gap_{item['id']}",
-                        placeholder="Describe the gap or what needs to be corrected...",
-                        height=68,
-                    )
+        review_tabs = st.tabs([short_label_r(s) for s in CHECKLIST] + ["✔ Decision"])
 
-                    # show prior gaps on this item
-                    for g in p.get("gaps", []):
-                        if g["item_id"] == item["id"]:
-                            tag = " · resolved by PM" if g.get("resolved") else ""
-                            st.markdown(
-                                f"<div class='sr-gap-box'><b>Previous gap · "
-                                f"{store.user_name(g['raised_by'])} · {g['raised_at']}{tag}</b>"
-                                f"<br>{g['comment']}</div>",
-                                unsafe_allow_html=True,
-                            )
-            st.markdown("")
+        for tab, section in zip(review_tabs[:-1], CHECKLIST):
+            with tab:
+                st.markdown(f"##### {section['section']}")
+                for item in section["items"]:
+                    resp = p["checklist"].get(item["id"], {"response": "", "note": ""})
+                    resp_label = {"yes": "✅ Yes", "no": "❌ No", "na": "➖ N/A", "": "⏳ Pending"}.get(resp["response"], "⏳")
 
-        st.markdown("#### Decision")
-        remarks = st.text_area("Approval / return remarks (optional)", height=68,
-                               placeholder="Overall comments...")
+                    with st.container(border=True):
+                        line = f"**{item['text']}**"
+                        if item["mandatory"]:
+                            line += " <span style='color:#B7791F;font-weight:700;'>*</span>"
+                        st.markdown(f"{line}  &nbsp;&nbsp; {resp_label}", unsafe_allow_html=True)
+                        if resp["note"]:
+                            st.caption(f"PM note: {resp['note']}")
+
+                        gap_inputs[item["id"]] = st.text_area(
+                            "Raise gap / comment (leave empty if none)",
+                            key=f"gap_{item['id']}",
+                            placeholder="Describe the gap or what needs to be corrected...",
+                            height=68,
+                        )
+
+                        for g in p.get("gaps", []):
+                            if g["item_id"] == item["id"]:
+                                tag = " · resolved by PM" if g.get("resolved") else ""
+                                st.markdown(
+                                    f"<div class='sr-gap-box'><b>Previous gap · "
+                                    f"{store.user_name(g['raised_by'])} · {g['raised_at']}{tag}</b>"
+                                    f"<br>{g['comment']}</div>",
+                                    unsafe_allow_html=True,
+                                )
+
+        with review_tabs[-1]:
+            st.markdown("##### Decision")
+            remarks = st.text_area("Approval / return remarks (optional)", height=68,
+                                   placeholder="Overall comments...")
 
         c1, c2 = st.columns(2)
         return_clicked = c1.form_submit_button("↩️ Return with gaps", use_container_width=True)
