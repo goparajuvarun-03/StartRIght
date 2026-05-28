@@ -279,6 +279,14 @@ st.markdown(
     }
     .stTabs [data-baseweb="tab-highlight"] { background: transparent !important; }
     .stTabs [data-baseweb="tab-panel"] { padding-top: 14px; }
+    /* stop Streamlit clipping long tab labels with an ellipsis */
+    .stTabs [data-baseweb="tab"] p,
+    .stTabs [data-baseweb="tab"] div {
+        white-space: nowrap !important;
+        overflow: visible !important;
+        text-overflow: clip !important;
+        max-width: none !important;
+    }
 
     /* Input fields — force dark, readable text on white */
     .stTextInput input,
@@ -462,23 +470,23 @@ def page_login():
     with left:
         st.markdown("# StartRight.")
         st.caption("CDO · PROJECT INITIATION WORKFLOW")
-        st.markdown(
-            "Move project initiation out of **scattered mailboxes** "
-            "and into a single space — with checklists, reviews, gap closure "
-            "and approvals in one place."
-        )
-        st.markdown("---")
-        st.markdown("**Demo accounts**")
-        st.markdown(
-            """
-            | Username | Password | Role |
-            |---|---|---|
-            | `priya` | `pm123` | Project Manager |
-            | `rahul` | `pm123` | Project Manager |
-            | `anita` | `pmo123` | PMO Reviewer |
-            | `vikram` | `pmo123` | PMO Reviewer |
-            """
-        )
+       # st.markdown(
+         #   "Move project initiation out of **scattered mailboxes** "
+        #    "and into a single space — with checklists, reviews, gap closure "
+          #  "and approvals in one place."
+        #)
+        #st.markdown("---")
+        #st.markdown("**Demo accounts**")
+        #st.markdown(
+          #  """
+           # | Username | Password | Role |
+            #|---|---|---|
+           # | `priya` | `pm123` | Project Manager |
+            #| `rahul` | `pm123` | Project Manager |
+            #| `anita` | `pmo123` | PMO Reviewer |
+            #| `vikram` | `pmo123` | PMO Reviewer |
+            #"""
+        #)
 
     with right:
         st.markdown("## Sign in")
@@ -873,27 +881,22 @@ def page_checklist():
 
     with st.form("checklist_form"):
         responses = {}
-        resp_options = ["—", "Yes", "No", "N/A"]
-        resp_to_value = {"—": "", "Yes": "yes", "No": "no", "N/A": "na"}
+        resp_options = ["Yes", "No", "N/A"]
+        resp_to_value = {"Yes": "yes", "No": "no", "N/A": "na"}
         value_to_resp = {v: k for k, v in resp_to_value.items()}
 
         st.markdown(
             "<p class='sr-muted'>Complete each section using the tabs below. "
-            "Items marked <span style='color:#B7791F;font-weight:700;'>*</span> are mandatory "
-            "and must be answered <b>Yes</b> before you can submit.</p>",
+            "Answer each item with <b>Yes</b>, <b>No</b>, or <b>N/A</b>. "
+            "You can submit once every item has an answer.</p>",
             unsafe_allow_html=True,
         )
 
-        # Build short tab labels: section number + a flag if it has any open gaps.
+        # Tab labels use the FULL section name (plus a flag if it has open gaps).
         def short_label(section, idx):
-            num = section["section"].split(".")[0].strip()
-            # short keyword from the section name
-            name = section["section"].split(".", 1)[1].strip() if "." in section["section"] else section["section"]
-            words = name.split()
-            short = " ".join(words[:2])
             has_gap = any(it["id"] in gap_item_ids for it in section["items"])
             flag = " ⚠️" if has_gap else ""
-            return f"{num}. {short}{flag}"
+            return f"{section['section']}{flag}"
 
         section_tabs = st.tabs(
             [short_label(s, i) for i, s in enumerate(CHECKLIST)] + ["📅 Kickoff"]
@@ -905,7 +908,9 @@ def page_checklist():
                 st.markdown(f"##### {section['section']}")
                 for item in section["items"]:
                     current = p["checklist"].get(item["id"], {"response": "", "note": ""})
-                    current_label = value_to_resp.get(current["response"], "—")
+                    # If there is a saved answer use it; otherwise start unselected.
+                    current_label = value_to_resp.get(current["response"])
+                    start_index = resp_options.index(current_label) if current_label in resp_options else None
 
                     pieces = []
                     if item["id"] in gap_item_ids:
@@ -921,7 +926,7 @@ def page_checklist():
                         chosen = c1.radio(
                             "Response",
                             resp_options,
-                            index=resp_options.index(current_label),
+                            index=start_index,
                             key=f"resp_{item['id']}",
                             horizontal=True,
                             label_visibility="collapsed",
@@ -942,7 +947,10 @@ def page_checklist():
                                     unsafe_allow_html=True,
                                 )
 
-                    responses[item["id"]] = {"response": resp_to_value[chosen], "note": note.strip()}
+                    responses[item["id"]] = {
+                        "response": resp_to_value.get(chosen, ""),
+                        "note": note.strip(),
+                    }
 
         # ---- final tab: kickoff meeting ----
         with section_tabs[-1]:
@@ -958,8 +966,8 @@ def page_checklist():
                     existing_time = dt.time()
                 except (ValueError, TypeError):
                     pass
-            kickoff_date = c1.date_input("Kickoff date *", value=existing_date, key="ko_date")
-            kickoff_time = c2.time_input("Kickoff time *", value=existing_time, key="ko_time")
+            kickoff_date = c1.date_input("Kickoff date", value=existing_date, key="ko_date")
+            kickoff_time = c2.time_input("Kickoff time", value=existing_time, key="ko_time")
             kickoff_notes = st.text_area(
                 "Kickoff notes",
                 value=p.get("kickoff_notes", ""),
@@ -968,7 +976,7 @@ def page_checklist():
 
         # ---- submit bar (outside the tabs, always visible at the bottom) ----
         st.markdown("---")
-        st.caption("Items marked * are mandatory and must be answered Yes before submission.")
+        st.caption("Answer every item with Yes, No, or N/A. The kickoff date is optional but recommended.")
 
         c1, c2, _ = st.columns([1, 1, 2])
         save_clicked = c1.form_submit_button("💾 Save draft", use_container_width=True)
@@ -983,20 +991,19 @@ def page_checklist():
                 kickoff_iso = kickoff_date.isoformat()
 
             if submit_clicked:
-                missing = []
-                for item in get_all_items():
-                    if item["mandatory"] and responses[item["id"]]["response"] != "yes":
-                        missing.append(item["text"])
-                if not kickoff_iso:
-                    missing.append("Kickoff date/time must be scheduled")
+                # Any answer counts (Yes/No/N/A). Only block items left blank.
+                unanswered = [
+                    item["text"] for item in get_all_items()
+                    if responses[item["id"]]["response"] == ""
+                ]
 
-                if missing:
+                if unanswered:
                     store.save_checklist(pid, responses, kickoff_iso, kickoff_notes.strip(),
                                          actor=u["username"], submit=False)
-                    msg = "Cannot submit — these mandatory items are incomplete: "
-                    msg += "; ".join(missing[:5])
-                    if len(missing) > 5:
-                        msg += f" ... (+{len(missing) - 5} more)"
+                    msg = "Cannot submit — please answer every item. Still blank: "
+                    msg += "; ".join(unanswered[:5])
+                    if len(unanswered) > 5:
+                        msg += f" ... (+{len(unanswered) - 5} more)"
                     flash("error", msg)
                     st.rerun()
                 else:
@@ -1061,10 +1068,7 @@ def page_review():
         gap_inputs = {}
 
         def short_label_r(section):
-            num = section["section"].split(".")[0].strip()
-            name = section["section"].split(".", 1)[1].strip() if "." in section["section"] else section["section"]
-            short = " ".join(name.split()[:2])
-            return f"{num}. {short}"
+            return section["section"]
 
         review_tabs = st.tabs([short_label_r(s) for s in CHECKLIST] + ["✔ Decision"])
 
