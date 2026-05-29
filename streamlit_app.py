@@ -504,25 +504,24 @@ def page_login():
     with left:
         st.markdown("# StartRight.")
         st.caption("CDO · PROJECT INITIATION WORKFLOW")
-        '''
-        st.markdown(
-            "Move project initiation out of **scattered mailboxes** "
-            "and into a single space — with checklists, reviews, gap closure "
-            "and approvals in one place."
-        )
-        st.markdown("---")
-        st.markdown("**Demo accounts**")
-        st.markdown(
-            """
-            | Username | Password | Role |
-            |---|---|---|
-            | `priya` | `pm123` | Project Manager |
-            | `rahul` | `pm123` | Project Manager |
-            | `anita` | `pmo123` | PMO Reviewer |
-            | `vikram` | `pmo123` | PMO Reviewer |
-            """
-        )
-        '''
+       
+      # st.markdown(
+       #     "Move project initiation out of **scattered mailboxes** "
+        #   "and into a single space — with checklists, reviews, gap closure "
+         #   "and approvals in one place."
+        #)
+        #st.markdown("---")
+        #st.markdown("**Demo accounts**")
+        #st.markdown(
+         #   """
+          #  | Username | Password | Role |
+           # |---|---|---|
+            #| `priya` | `pm123` | Project Manager |
+            #| `rahul` | `pm123` | Project Manager |
+            #| `anita` | `pmo123` | PMO Reviewer |
+            #| `vikram` | `pmo123` | PMO Reviewer |
+            #"""
+        #)         
     with right:
         st.markdown("## Sign in")
         with st.form("login_form", clear_on_submit=False):
