@@ -198,48 +198,82 @@ st.markdown(
         color: #fff !important;
     }
 
-    /* Primary buttons in main area — bold terracotta */
+    /* =====================================================
+       BUTTONS — explicit colours on the <button> AND its inner
+       <div>/<p>/<span> so no Streamlit cascade can hide them.
+       Sidebar buttons are handled above; these rules target main area only
+       by excluding [data-testid="stSidebar"] descendants.
+       ===================================================== */
+
+    /* PRIMARY (the main call-to-action — submit, approve, etc.) */
     .stApp button[kind="primary"],
     .stApp button[data-testid="baseButton-primary"],
     .stApp button[data-testid="stBaseButton-primary"],
-    .stApp button[data-testid="stBaseButton-primaryFormSubmit"] {
-        background: var(--terracotta) !important;
-        border: 1.5px solid var(--terracotta) !important;
-        color: #fff !important;
+    .stApp button[data-testid="stBaseButton-primaryFormSubmit"],
+    .stApp [data-testid="stFormSubmitButton"] button[kind="primary"] {
+        background-color: var(--teal) !important;
+        border: 1.5px solid var(--teal) !important;
+        color: #ffffff !important;
         font-family: 'Manrope', sans-serif !important;
         font-weight: 700 !important;
         letter-spacing: 0.01em;
-        box-shadow: 0 6px 16px -8px rgba(217, 79, 43, 0.6);
+        box-shadow: 0 6px 16px -8px rgba(31, 78, 121, 0.5);
         transition: all 0.15s ease;
+    }
+    /* force the inner text element to be white too */
+    .stApp button[kind="primary"] *,
+    .stApp button[data-testid="baseButton-primary"] *,
+    .stApp button[data-testid="stBaseButton-primary"] *,
+    .stApp button[data-testid="stBaseButton-primaryFormSubmit"] *,
+    .stApp [data-testid="stFormSubmitButton"] button[kind="primary"] * {
+        color: #ffffff !important;
+        -webkit-text-fill-color: #ffffff !important;
     }
     .stApp button[kind="primary"]:hover,
     .stApp button[data-testid="baseButton-primary"]:hover,
     .stApp button[data-testid="stBaseButton-primary"]:hover,
     .stApp button[data-testid="stBaseButton-primaryFormSubmit"]:hover {
-        background: #b8401f !important;
-        border-color: #b8401f !important;
-        box-shadow: 0 10px 22px -8px rgba(217, 79, 43, 0.75);
+        background-color: #163E61 !important;
+        border-color: #163E61 !important;
+        box-shadow: 0 10px 22px -8px rgba(31, 78, 121, 0.65);
         transform: translateY(-1px);
     }
 
-    /* Secondary buttons */
-    .stApp .main button[kind="secondary"],
-    .stApp .main button[data-testid="baseButton-secondary"],
-    .stApp .main button[data-testid="stBaseButton-secondary"],
-    .stApp .main button[data-testid="stBaseButton-secondaryFormSubmit"] {
-        background: #fff !important;
+    /* SECONDARY (everything else: Open, Back, Cancel, etc.)
+       Match every Streamlit button NOT in the sidebar and NOT primary. */
+    .stApp button[kind="secondary"],
+    .stApp button[data-testid="baseButton-secondary"],
+    .stApp button[data-testid="stBaseButton-secondary"],
+    .stApp button[data-testid="stBaseButton-secondaryFormSubmit"] {
+        background-color: #ffffff !important;
         color: var(--teal) !important;
         border: 1.5px solid var(--teal) !important;
         font-family: 'Manrope', sans-serif !important;
         font-weight: 600 !important;
         transition: all 0.15s ease;
     }
-    .stApp .main button[kind="secondary"]:hover,
-    .stApp .main button[data-testid="baseButton-secondary"]:hover,
-    .stApp .main button[data-testid="stBaseButton-secondary"]:hover,
-    .stApp .main button[data-testid="stBaseButton-secondaryFormSubmit"]:hover {
-        background: var(--teal-light) !important;
+    /* force the inner text element to be navy too */
+    .stApp button[kind="secondary"] *,
+    .stApp button[data-testid="baseButton-secondary"] *,
+    .stApp button[data-testid="stBaseButton-secondary"] *,
+    .stApp button[data-testid="stBaseButton-secondaryFormSubmit"] * {
         color: var(--teal) !important;
+        -webkit-text-fill-color: var(--teal) !important;
+    }
+    .stApp button[kind="secondary"]:hover,
+    .stApp button[data-testid="baseButton-secondary"]:hover,
+    .stApp button[data-testid="stBaseButton-secondary"]:hover,
+    .stApp button[data-testid="stBaseButton-secondaryFormSubmit"]:hover {
+        background-color: var(--teal-light) !important;
+        color: var(--teal) !important;
+    }
+
+    /* The sidebar overrides above already cover sidebar buttons.
+       But be doubly safe — re-assert sidebar button text colour to cream. */
+    section[data-testid="stSidebar"] button,
+    section[data-testid="stSidebar"] button * {
+        color: #F4F6F9 !important;
+        -webkit-text-fill-color: #F4F6F9 !important;
     }
 
     /* Cards / containers with borders */
@@ -470,24 +504,25 @@ def page_login():
     with left:
         st.markdown("# StartRight.")
         st.caption("CDO · PROJECT INITIATION WORKFLOW")
-       # st.markdown(
-         #   "Move project initiation out of **scattered mailboxes** "
-        #    "and into a single space — with checklists, reviews, gap closure "
-          #  "and approvals in one place."
-        #)
-        #st.markdown("---")
-        #st.markdown("**Demo accounts**")
-        #st.markdown(
-          #  """
-           # | Username | Password | Role |
-            #|---|---|---|
-           # | `priya` | `pm123` | Project Manager |
-            #| `rahul` | `pm123` | Project Manager |
-            #| `anita` | `pmo123` | PMO Reviewer |
-            #| `vikram` | `pmo123` | PMO Reviewer |
-            #"""
-        #)
-
+        '''
+        st.markdown(
+            "Move project initiation out of **scattered mailboxes** "
+            "and into a single space — with checklists, reviews, gap closure "
+            "and approvals in one place."
+        )
+        st.markdown("---")
+        st.markdown("**Demo accounts**")
+        st.markdown(
+            """
+            | Username | Password | Role |
+            |---|---|---|
+            | `priya` | `pm123` | Project Manager |
+            | `rahul` | `pm123` | Project Manager |
+            | `anita` | `pmo123` | PMO Reviewer |
+            | `vikram` | `pmo123` | PMO Reviewer |
+            """
+        )
+        '''
     with right:
         st.markdown("## Sign in")
         with st.form("login_form", clear_on_submit=False):
